@@ -347,7 +347,7 @@ def _interpolate_block(
     EM_indices: slice,
     F_EM: np.ndarray,
     config: InterpolationConfig,
-):
+) -> tuple[np.ndarray, np.ndarray]:
     interpolated = np.zeros([X_Mech.shape[0], 3])
     unmapped = np.zeros([1, 3])
 
@@ -357,19 +357,19 @@ def _interpolate_block(
         mapped = False
 
         # Ensure query is not empty
-        if mech_nodes_idx.shape[0] > 1:
+        if mech_nodes_idx.shape[0] > 0:
             distances = euclidean_distances(
                 X_Mech[mech_nodes_idx], em_node.reshape(1, -1)
             )
             # clip the mech nodes based on max distance
-            clip_idx = np.where(distances < config.max_distance)
-            distances = distances[clip_idx]
-            mech_nodes_idx = mech_nodes_idx[clip_idx]
+            keep = distances.flatten() < config.max_distance
+            distances = distances[keep]
+            mech_nodes_idx = mech_nodes_idx[keep]
 
             # if coincident node found, assign directly
             if distances[0] < config.coincidence_tolerance:
                 logging.debug(f"Coincident node found {X_EM[i, :]}")
-                interpolated[mech_nodes_idx[i, 0], :] = [
+                interpolated[mech_nodes_idx[0], :] = [
                     F_EM[i, 0],
                     F_EM[i, 1],
                     F_EM[i, 2],
@@ -400,6 +400,7 @@ def _interpolate_block(
         if not mapped:
             unmapped = unmapped + F_EM[i, :]
         i += 1
+    return interpolated, unmapped
 
 
 # --- interpolation kernels ---
@@ -420,20 +421,20 @@ def _FEM_interpolation_kernel(
         Nt = vi.shape[0]
         A = np.zeros([3, 3])
         for j in range(0, vi.shape[0]):
+            dist = Li[j][0]
             l = vi[j, 0]
             m = vi[j, 1]
             n = vi[j, 2]
-            A[0, 0] += (1.0 / Li[j]) * l**2.0
-            A[0, 1] += (1.0 / Li[j]) * l * m
-            A[0, 2] += (1.0 / Li[j]) * l * n
+            A[0, 0] += (1.0 / dist) * l**2.0
+            A[0, 1] += (1.0 / dist) * l * m
+            A[0, 2] += (1.0 / dist) * l * n
 
-            A[1, 0] += (1.0 / Li[j]) * l * m
-            A[1, 1] += (1.0 / Li[j]) * m**2.0
-            A[1, 2] += (1.0 / Li[j]) * m * n
-
-            A[2, 0] += (1.0 / Li[j]) * l * n
-            A[2, 1] += (1.0 / Li[j]) * m * n
-            A[2, 2] += (1.0 / Li[j]) * n**2.0
+            A[1, 0] += (1.0 / dist) * l * m
+            A[1, 1] += (1.0 / dist) * m**2.0
+            A[1, 2] += (1.0 / dist) * m * n
+            A[2, 0] += (1.0 / dist) * l * n
+            A[2, 1] += (1.0 / dist) * m * n
+            A[2, 2] += (1.0 / dist) * n**2.0
 
         F = np.zeros([3, 1])
         F[0] = F_EM[EM_index, 0]
@@ -446,20 +447,20 @@ def _FEM_interpolation_kernel(
             U = np.linalg.solve(A, F)
 
             for j in range(0, vi.shape[0]):
+                dist = Li[j][0]
                 l = vi[j, 0]
                 m = vi[j, 1]
                 n = vi[j, 2]
-                A[0, 0] = (1.0 / Li[j]) * l**2.0
-                A[0, 1] = (1.0 / Li[j]) * l * m
-                A[0, 2] = (1.0 / Li[j]) * l * n
+                A[0, 0] = (1.0 / dist) * l**2.0
+                A[0, 1] = (1.0 / dist) * l * m
+                A[0, 2] = (1.0 / dist) * l * n
 
-                A[1, 0] = (1.0 / Li[j]) * l * m
-                A[1, 1] = (1.0 / Li[j]) * m**2.0
-                A[1, 2] = (1.0 / Li[j]) * m * n
-
-                A[2, 0] = (1.0 / Li[j]) * l * n
-                A[2, 1] = (1.0 / Li[j]) * m * n
-                A[2, 2] = (1.0 / Li[j]) * n**2.0
+                A[1, 0] = (1.0 / dist) * l * m
+                A[1, 1] = (1.0 / dist) * m**2.0
+                A[1, 2] = (1.0 / dist) * m * n
+                A[2, 0] = (1.0 / dist) * l * n
+                A[2, 1] = (1.0 / dist) * m * n
+                A[2, 2] = (1.0 / dist) * n**2.0
                 R[3 * j : 3 * j + 3] = np.dot(A, U)
 
         interpolated[mech_idx, :] += R.reshape(Nt, 3)
@@ -480,8 +481,6 @@ def _dist_weight_kernel(
     max_distance = np.max(Li)
     weights = 1 / (Li / max_distance)  # inverse distance weights
     weights /= np.sum(weights)  # normalize the weights so that they sum to 1
-    interpolated[mech_idx, 0] += F_EM[EM_index, 0] * weights
-    interpolated[mech_idx, 1] += F_EM[EM_index, 1] * weights
-    interpolated[mech_idx, 2] += F_EM[EM_index, 2] * weights
+    interpolated[mech_idx, :] += weights * F_EM[EM_index]
 
     return True
