@@ -376,6 +376,12 @@ def _interpolate_block(
             distances = distances[keep]
             mech_nodes_idx = mech_nodes_idx[keep]
 
+            # Ensure that after clipping something remains
+            if mech_nodes_idx.shape[0] == 0:
+                unmapped = unmapped + F_EM[i, :]
+                i = i + 1
+                continue
+
             # if coincident node found, assign directly
             if distances[0] < config.coincidence_tolerance:
                 logging.debug(f"Coincident node found {X_EM[i, :]}")
