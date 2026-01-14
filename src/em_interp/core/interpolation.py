@@ -185,15 +185,24 @@ class Interpolator:
         self.mech_vtk = {}
         self.em_vtk = {}
 
-    def interpolate_all(self):
-        """Go through all em forces file and interpolate them"""
+    def interpolate_all(self, progress_callback=None):
+        """Go through all em forces file and interpolate them
+        Parameters
+        ----------
+        progress_callback : callable, optional
+            Function to call with progress percentage (int 0-100)
+        """
         interpolated_results = {}
-        for name, F_EM in self.em_forces.items():
+        total = len(self.em_forces)
+        for idx, (name, F_EM) in enumerate(self.em_forces.items()):
             interpolated, unmapped = self.mech_tree.interpolate(F_EM)
             interpolated_results[name] = {
                 "interpolated": interpolated,
                 "unmapped": unmapped,
             }
+            if progress_callback is not None:
+                percent = int(100 * (idx + 1) / total)
+                progress_callback(percent)
         self.interpolated_results = interpolated_results
 
     def dump_interpolation_check(self, outfile: Path, pole: np.ndarray | None = None):
@@ -234,7 +243,7 @@ class Interpolator:
             df.index = self.node_numbers.astype(int)
             df.reset_index(inplace=True)
             df.to_csv(outfile, index=False, header=False)
-        
+
         logging.info(f"ANSYS files exported to {outdir}")
 
     def _compute_resultants(self, name: str, pole: np.ndarray | None = None) -> dict:
@@ -346,7 +355,7 @@ class Interpolator:
             # EM
             outfile_em = Path(outdir, f"{name}_EM.vtk")
             self.em_vtk[name].save(outfile_em)
-        
+
         logging.info(f"VTK files exported to {outdir}")
 
 

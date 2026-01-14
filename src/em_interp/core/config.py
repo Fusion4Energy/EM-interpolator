@@ -4,13 +4,13 @@ from pathlib import Path
 
 
 class QUERY_TYPE(Enum):
-    RADIUS = "radius"
-    K = "k"
+    RADIUS = "Radius"
+    K = "K-Nearest Neighbors"
 
 
 class INTERPOLATION_KERNEL(Enum):
-    DISTANCE_WEIGHTED = "distance_weighted"
-    FEM = "fem"
+    DISTANCE_WEIGHTED = "Weighted by distance"
+    FEM = "FEM system"
 
 
 @dataclass

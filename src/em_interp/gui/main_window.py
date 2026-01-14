@@ -8,18 +8,21 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QSplitter,
     QLabel,
+    QProgressDialog,
+    QInputDialog,
 )
+from PyQt5.QtCore import Qt
 from .file_panel import FilePanel
 from .param_panel import ParamPanel
 from .visualization_panel import VisualizationPanel
 from .log_panel import LogPanel
 import logging
-from PyQt5.QtWidgets import QInputDialog
 from pathlib import Path
 import os
 
 from em_interp.core.interpolation import Interpolator
 from em_interp.core.config import InterpolationConfig, INTERPOLATION_KERNEL, QUERY_TYPE
+from em_interp.gui.worker import InterpolationWorker
 
 
 class QtLogHandler(logging.Handler):
@@ -161,7 +164,11 @@ class MainWindow(QMainWindow):
         if self.interpolator is None:
             logging.error("Interpolator not initialized. Cannot perform interpolation.")
             return
-        self.interpolator.interpolate_all()
+        self._show_progress_dialog()
+        self.worker = InterpolationWorker(self.interpolator)
+        self.worker.progress_changed.connect(self._update_progress)
+        self.worker.finished.connect(self.progress_dialog.close)
+        self.worker.start()
 
     def click_export_checks(self):
         if self.interpolator is None:
@@ -219,10 +226,23 @@ class MainWindow(QMainWindow):
     def _read_config(self) -> InterpolationConfig:
         config = InterpolationConfig(
             method=QUERY_TYPE(self.param_panel.method_combo.currentText()),
-            param=self.param_panel.param_spin.value(),
+            param=float(self.param_panel.param_spin.text()),
             max_distance=float(self.param_panel.max_dist_edit.text()),
             coincidence_tolerance=float(self.param_panel.coinc_tol_edit.text()),
             kernel=INTERPOLATION_KERNEL(self.param_panel.kernel_combo.currentText()),
             multithread=self.param_panel.multithread_check.isChecked(),
         )
         return config
+
+    def _show_progress_dialog(self):
+        self.progress_dialog = QProgressDialog(
+            "Interpolating...", "Cancel", 0, 100, self
+        )
+        self.progress_dialog.setWindowTitle("Progress")
+        self.progress_dialog.setWindowModality(Qt.WindowModal)
+        self.progress_dialog.setValue(0)
+        self.progress_dialog.show()
+
+    def _update_progress(self, value):
+        if hasattr(self, "progress_dialog"):
+            self.progress_dialog.setValue(value)
