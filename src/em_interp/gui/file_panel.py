@@ -76,13 +76,16 @@ class FilePanel(QWidget):
         # layout.addWidget(self.config_path)
         # layout.addWidget(self.config_btn)
 
+        # output directory row
         self.outdir_label = QLabel("Output Directory:")
+        outdir_row = QHBoxLayout()
         self.outdir_path = QLineEdit()
         self.outdir_btn = QPushButton("Browse")
         self.outdir_btn.clicked.connect(self.browse_outdir)
         layout.addWidget(self.outdir_label)
-        layout.addWidget(self.outdir_path)
-        layout.addWidget(self.outdir_btn)
+        outdir_row.addWidget(self.outdir_path)
+        outdir_row.addWidget(self.outdir_btn)
+        layout.addLayout(outdir_row)
 
     def browse_em_folder(self):
         folder = QFileDialog.getExistingDirectory(self, "Select EM Folder")

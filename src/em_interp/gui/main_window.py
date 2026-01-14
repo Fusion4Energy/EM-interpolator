@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         left_layout = QVBoxLayout(left_widget)
         left_layout.setContentsMargins(0, 0, 0, 0)
         left_layout.setSpacing(2)
-        left_layout.addWidget(QLabel("3D Visualization (PyVista pane):"))
+        left_layout.addWidget(QLabel("3D Visualization 1: EM, 2: Mech"))
         self.visualization_panel = VisualizationPanel()
         left_layout.addWidget(self.visualization_panel)
         splitter.addWidget(left_widget)
@@ -107,7 +107,7 @@ class MainWindow(QMainWindow):
 
         splitter.setSizes([800, 400])
         vis_log_layout.addWidget(splitter)
-        tabs.addTab(vis_log_tab, "Visualization & Log")
+        tabs.addTab(vis_log_tab, "Interpolation")
 
         main_layout.addWidget(tabs)
 
