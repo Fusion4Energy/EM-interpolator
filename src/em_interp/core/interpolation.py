@@ -239,10 +239,13 @@ class Interpolator:
 
         for name, result in self.interpolated_results.items():
             outfile = Path(outdir, f"interpolated_{name}.txt")
-            df = pd.DataFrame(result["interpolated"], columns=["Fx", "Fy", "Fz"])
-            df.index = self.node_numbers.astype(int)
-            df.reset_index(inplace=True)
-            df.to_csv(outfile, index=False, header=False)
+
+            with open(outfile, "w") as f:
+                for i, label in enumerate(["Fx", "Fy", "Fz"]):
+                    for j, nodeID in enumerate(self.node_numbers):
+                        f.write(
+                            f"F, {int(nodeID)}, {label}, {result['interpolated'][j][i]}\n"
+                        )
 
         logging.info(f"ANSYS files exported to {outdir}")
 
