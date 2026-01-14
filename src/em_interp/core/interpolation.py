@@ -212,6 +212,7 @@ class Interpolator:
 
         df = pd.DataFrame(rows)
         df.to_csv(outfile, index=False)
+        logging.info(f"Interpolation check dumped to {outfile}")
 
     def export_to_ansys(self, outdir: Path):
         """Export each interpolated result to an ANSYS format
@@ -233,6 +234,8 @@ class Interpolator:
             df.index = self.node_numbers.astype(int)
             df.reset_index(inplace=True)
             df.to_csv(outfile, index=False, header=False)
+        
+        logging.info(f"ANSYS files exported to {outdir}")
 
     def _compute_resultants(self, name: str, pole: np.ndarray | None = None) -> dict:
         if pole is None:
@@ -278,7 +281,7 @@ class Interpolator:
             "dMy [%]": m_err_comp[1] * 100,
             "dMz [%]": m_err_comp[2] * 100,
             "Unmapped_EM_Force [N]": np.linalg.norm(
-                self.interpolated_results[name]["unmapped [N]"]
+                self.interpolated_results[name]["unmapped"]
             ),
         }
 
@@ -329,7 +332,12 @@ class Interpolator:
                 "No interpolated results found. Run interpolate_all() first."
             )
 
-        # build and dump the vtks
+        # dump the vtks
+        # check first if vtk where built
+        if not self.mech_vtk or not self.em_vtk:
+            logging.warning("vtk were not built, building now...")
+            self.build_vtk_output()
+
         for name in self.em_forces.keys():
             # Mech
             outfile = Path(outdir, f"{name}_interpolated.vtk")
@@ -338,6 +346,8 @@ class Interpolator:
             # EM
             outfile_em = Path(outdir, f"{name}_EM.vtk")
             self.em_vtk[name].save(outfile_em)
+        
+        logging.info(f"VTK files exported to {outdir}")
 
 
 def _interpolate_block(

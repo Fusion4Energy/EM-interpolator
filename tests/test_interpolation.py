@@ -94,3 +94,11 @@ class TestInterpolator:
     def test_interpolate_all(self, interpolator_fixture):
         interpolator = interpolator_fixture
         interpolator.interpolate_all()
+    
+    def test_dump_interpolation(self, interpolator_fixture, tmp_path):
+        interpolator = interpolator_fixture
+        interpolator.interpolate_all()
+        interpolator.dump_interpolation_check(Path(tmp_path, 'checks.csv'))
+        interpolator.export_to_ansys(tmp_path)
+        interpolator.export_forces_to_vtk(tmp_path)
+
