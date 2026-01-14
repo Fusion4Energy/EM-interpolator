@@ -123,6 +123,31 @@ class MainWindow(QMainWindow):
         self.btn_compute_vtk.clicked.connect(self.click_compute_vtk)
         self.btn_export_vtk.clicked.connect(self.click_export_vtk)
         self.btn_preview_forces.clicked.connect(self.click_preview_forces)
+        self.btn_run_all.clicked.connect(self.click_run_all)
+
+    def click_run_all(self):
+        # 1. Initialize interpolator
+        self.initialize_interpolator()
+        if self.interpolator is None:
+            return
+        # 2. Interpolate (with progress bar)
+        self._show_progress_dialog()
+        self.worker = InterpolationWorker(self.interpolator)
+        self.worker.progress_changed.connect(self._update_progress)
+
+        def after_interpolation():
+            self.progress_dialog.setLabelText("Exporting checks...")
+            self.click_export_checks()
+            self.progress_dialog.setLabelText("Exporting ANSYS files...")
+            self.click_export_ansys()
+            self.progress_dialog.setLabelText("Computing VTK...")
+            self.click_compute_vtk()
+            self.progress_dialog.setLabelText("Exporting VTK...")
+            self.click_export_vtk()
+            self.progress_dialog.close()
+
+        self.worker.finished.connect(after_interpolation)
+        self.worker.start()
 
         # Redirect Python logger to the log panel
         log_handler = QtLogHandler(self.log_panel)
