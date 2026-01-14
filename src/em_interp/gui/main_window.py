@@ -169,11 +169,10 @@ class MainWindow(QMainWindow):
             return
 
         # create the outdir directory if it does not exist
-        outdir = Path(self.file_panel.outdir_path.text(), "interpolation_checks")
-        os.makedirs(outdir, exist_ok=True)
+        outfile = Path(self.file_panel.outdir_path.text(), "interpolation_checks.csv")
 
         # TODO: add possibility to select a different pole than 0,0,0
-        self.interpolator.dump_interpolation_check(outdir, None)
+        self.interpolator.dump_interpolation_check(outfile, None)
 
     def click_export_ansys(self):
         if self.interpolator is None:

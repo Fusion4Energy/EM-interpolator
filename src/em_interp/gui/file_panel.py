@@ -63,6 +63,8 @@ class FilePanel(QWidget):
         mech_row.addWidget(self.mech_mesh_btn)
         mech_row.addWidget(self.mech_x_col_label)
         mech_row.addWidget(self.mech_x_col_edit)
+        mech_row.addWidget(self.mech_node_id_col_label)
+        mech_row.addWidget(self.mech_node_id_col_edit)
         layout.addWidget(self.mech_mesh_label)
         layout.addLayout(mech_row)
 
