@@ -4,12 +4,13 @@ import logging
 from sklearn.neighbors import KDTree
 from sklearn.metrics.pairwise import euclidean_distances
 import concurrent.futures
-from core.parsers import parse_mech_mesh, parse_em_loads
-from core.config import InterpolationConfig, INTERPOLATION_KERNEL, QUERY_TYPE
 import os
 from pathlib import Path
 import pandas as pd
 import pyvista as pv
+
+from em_interp.core.parsers import parse_mech_mesh, parse_em_loads
+from em_interp.core.config import InterpolationConfig, INTERPOLATION_KERNEL, QUERY_TYPE
 
 
 class MechTree:

@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     QCheckBox,
     QLineEdit,
 )
-from core.config import INTERPOLATION_KERNEL, QUERY_TYPE
+from em_interp.core.config import INTERPOLATION_KERNEL, QUERY_TYPE
 
 
 class ParamPanel(QWidget):

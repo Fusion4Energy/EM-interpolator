@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
-from core.interpolation import MechTree
-from core.config import InterpolationConfig, QUERY_TYPE, INTERPOLATION_KERNEL
+from em_interp.core.interpolation import MechTree
+from em_interp.core.config import InterpolationConfig, QUERY_TYPE, INTERPOLATION_KERNEL
 
 
 class TestMechTree:

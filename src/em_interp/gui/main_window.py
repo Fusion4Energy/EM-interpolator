@@ -13,12 +13,13 @@ from .file_panel import FilePanel
 from .param_panel import ParamPanel
 from .visualization_panel import VisualizationPanel
 from .log_panel import LogPanel
-from core.interpolation import Interpolator
-from core.config import InterpolationConfig, INTERPOLATION_KERNEL, QUERY_TYPE
 import logging
 from PyQt5.QtWidgets import QInputDialog
 from pathlib import Path
 import os
+
+from em_interp.core.interpolation import Interpolator
+from em_interp.core.config import InterpolationConfig, INTERPOLATION_KERNEL, QUERY_TYPE
 
 
 class QtLogHandler(logging.Handler):
