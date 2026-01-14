@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools >= 69.5.1", "setuptools_scm[toml]>=8.1.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "em-interpolator"
+license = { file = "LICENSE" }
+# dynamic = ["version"]
+version = "0.0.1"
+authors = [
+    { name = "F4E mechanical team", email = "davide.laghi@f4e.europa.eu" },
+]
+description = "Interpolator of EM forces to mechanical meshes"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "scikit-learn",
+    "pandas",
+    "PyQt5",
+    "pyvistaqt",
+]
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "ruff"]
+
+# [project.urls]
+# Homepage = "https://github.com/fusion4energy"
+# Repository = "https://github.com/Fusion4Energy/F4Enix"
+# Documentation = "https://f4enix.readthedocs.io/en/latest/"
+
+# [tool.setuptools_scm]
+# write_to = "src/_version.py"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.package-data]
+"f4enix" = ["**/*.xlsx", "**/*.txt", "**/*.csv"]
