@@ -370,6 +370,7 @@ def _interpolate_block(
     F_EM: np.ndarray,
     config: InterpolationConfig,
 ) -> tuple[np.ndarray, np.ndarray]:
+    """Interpolate a block of EM nodes to Mech nodes"""
     interpolated = np.zeros([X_Mech.shape[0], 3])
     unmapped = np.zeros([1, 3])
 
@@ -441,11 +442,11 @@ def _FEM_interpolation_kernel(
     F_EM: np.ndarray,
     interpolated: np.ndarray,
 ) -> bool:
+    """FEM-based interpolation kernel"""
     roi = X_Mech[mech_idx] - X_EM[EM_index]
     vi = np.divide(roi, Li)
 
     if vi.shape[0] > 0:
-        # Nt=idx[i].shape[0]
         Nt = vi.shape[0]
         A = np.zeros([3, 3])
         for j in range(0, vi.shape[0]):
