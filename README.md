@@ -25,7 +25,7 @@ while the second is used to perform the interpolation, export data and check res
 ### Configuration Tab
 Three different paths must be indicated to run the interpolation:
 
-- *EM folder*: path to a folder containing the EM forces. These are .csv files (with or without header, various separators are accepted) that must contain the coordinates of the EM centroids (in meters) and the EM forces to be interpolated (in Newton). The GUI allows to indicate which is the index (starting from 0) of the `X` column and `Fx` column. `Y`, `Z` and `Fy`, `Fz` columns are expected to be placed respectively after the `X` column and `Fx` one.
+- *EM folder*: path to a folder containing the EM forces. These are .csv files (with or without header, various separators are accepted) that must contain the coordinates of the EM centroids (in meters) and the EM forces to be interpolated (in Newton). The GUI allows to indicate which is the index (starting from 0) of the `X` column and `Fx` column. `Y`, `Z` and `Fy`, `Fz` columns are expected to be placed respectively after the `X` column and `Fx` one. No other files should be present in this folder.
 **More than one EM force file can be interpolated in the same run**.
 - *Mechanical Mesh*: path to the .csv file describing the nodes of the mechanical mesh onto which forces have to be interpolated. The GUI allows to indicate the column index of the `node number` and the `X` coordinate (in meters). `Y` and `Z` coordinates columns are expected after the `X` one.
 - *Output directory* folder where all outputs of the interpolation will be stored.
