@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Linux or Windows]
- - F4Enix version
+ - em-interpolator version
  - Python version
 
 **Additional context**

@@ -46,7 +46,7 @@ jobs:
       # Run pytest
       - name: Testing
         run: |
-          pytest --cov=src/f4enix --cov-config=".coveragerc"  --cov-report xml
+          pytest --cov=src/em_interp --cov-config=".coveragerc"  --cov-report xml
 
       - name: Upload coverage to Codecov
         # do it only once for python 3.10

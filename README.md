@@ -1,5 +1,5 @@
 [![Testing windows](https://github.com/Fusion4Energy/EM-interpolator/actions/workflows/AutomatedTests_win.yml/badge.svg?branch=main)](https://github.com/Fusion4Energy/EM-interpolator/actions/workflows/AutomatedTests_win.yml)
-[![Testing linux](https://github.com/Radiation-Transport/EM-interpolator/actions/workflows/AutomatedTests_linux.yml/badge.svg?branch=main)](https://github.com/Fusion4Energy/EM-interpolator/actions/workflows/AutomatedTests_linux.yml)
+[![Testing linux](https://github.com/Fusion4Energy/EM-interpolator/actions/workflows/AutomatedTests_linux.yml/badge.svg?branch=main)](https://github.com/Fusion4Energy/EM-interpolator/actions/workflows/AutomatedTests_linux.yml)
 [![PyPi version](https://badgen.net/pypi/v/em-interpolator/)](https://pypi.org/project/em-interpolator)
 [![Documentation Status](https://readthedocs.org/projects/em-interpolator/badge/?version=latest)](https://em-interpolator.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/Fusion4Energy/EM-interpolator/graph/badge.svg?token=P4A85K0ACG)](https://codecov.io/gh/Fusion4Energy/EM-interpolator)
