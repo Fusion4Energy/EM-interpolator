@@ -2,3 +2,4 @@
 **/__pycache__
 .pytest_cache/**
 **/em_interpolator.egg-info
+src/_version.py
