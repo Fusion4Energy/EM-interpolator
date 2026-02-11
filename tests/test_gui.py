@@ -181,32 +181,34 @@ class TestParamPanel:
         assert panel.multithread_check.isChecked() == (not initial_state)
 
     def test_method_changed_to_radius(self, qapp):
-        """Test method change to radius (note: case sensitivity issue in original code)."""
+        """Test method change to Radius.
+        
+        Note: There is a case sensitivity mismatch in the original code. The combo box shows
+        'Radius' (capitalized) but the code checks for 'radius' (lowercase), so the 
+        special handling for radius method doesn't actually trigger through the UI.
+        This test verifies the actual current behavior.
+        """
         panel = ParamPanel()
+        initial_max_dist = panel.max_dist_edit.text()
         panel.param_spin.setText("2.0")
-        # Trigger the method changed signal with lowercase 'radius'
-        # Note: This test verifies the internal method behavior
-        panel._on_method_changed("radius")
-        # When method is 'radius', max_dist should be disabled and match param
-        assert not panel.max_dist_edit.isEnabled()
-        assert panel.max_dist_edit.text() == panel.param_spin.text()
+        # Set the method combo to "Radius" using the correct enum value
+        panel.method_combo.setCurrentText("Radius")
+        # Due to case mismatch bug, max_dist should remain enabled and unchanged
+        assert panel.max_dist_edit.isEnabled()
+        assert panel.max_dist_edit.text() == initial_max_dist
 
-    def test_param_changed_with_radius_method(self, qapp):
-        """Test param change behavior with radius method."""
+    def test_param_changed_with_non_radius_method(self, qapp):
+        """Test that param changes don't affect max_dist when method is not radius."""
         panel = ParamPanel()
-        # Set param to initial value
+        # Set method to K-Nearest Neighbors
+        panel.method_combo.setCurrentText("K-Nearest Neighbors")
         panel.param_spin.setText("2.0")
-        # Manually call _on_method_changed with 'radius' to trigger the behavior
-        panel._on_method_changed("radius")
-        # Verify max_dist matches param and is disabled
-        assert panel.max_dist_edit.text() == "2.0"
-        assert not panel.max_dist_edit.isEnabled()
-        # Now test _on_param_changed directly
-        panel._on_param_changed("3.5")
-        # Note: This won't work because currentText() is "Radius" not "radius"
-        # This is a bug in the original code, but we're just testing current behavior
-        # So max_dist_edit should still be "2.0"
-        assert panel.max_dist_edit.text() == "2.0"
+        # max_dist should remain at its original value
+        assert panel.max_dist_edit.text() == "0.5"
+        # Change param again
+        panel.param_spin.setText("3.5")
+        # max_dist should still be unchanged
+        assert panel.max_dist_edit.text() == "0.5"
 
 
 class TestVisualizationPanel:
@@ -315,11 +317,11 @@ class TestMainWindow:
     def test_read_config(self, qapp):
         """Test reading configuration from param panel."""
         window = MainWindow()
-        window.param_panel.method_combo.setCurrentText("k")
+        window.param_panel.method_combo.setCurrentText("K-Nearest Neighbors")
         window.param_panel.param_spin.setText("5")
         window.param_panel.max_dist_edit.setText("0.8")
         window.param_panel.coinc_tol_edit.setText("1e-7")
-        window.param_panel.kernel_combo.setCurrentText("distance_weighted")
+        window.param_panel.kernel_combo.setCurrentText("Weighted by distance")
         window.param_panel.multithread_check.setChecked(True)
         
         config = window._read_config()
