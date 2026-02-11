@@ -5,8 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "em-interpolator"
 license = { file = "LICENSE" }
-# dynamic = ["version"]
-version = "0.0.1"
+dynamic = ["version"]
 authors = [
     { name = "F4E mechanical team", email = "davide.laghi@f4e.europa.eu" },
 ]
@@ -27,16 +26,16 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "ruff"]
 
-# [project.urls]
-# Homepage = "https://github.com/fusion4energy"
-# Repository = "https://github.com/Fusion4Energy/F4Enix"
-# Documentation = "https://f4enix.readthedocs.io/en/latest/"
+[project.urls]
+Homepage = "https://github.com/Fusion4Energy"
+Repository = "https://github.com/Fusion4Energy/EM-interpolator"
+Documentation = "https://github.com/Fusion4Energy/EM-interpolator"
 
-# [tool.setuptools_scm]
-# write_to = "src/_version.py"
+[tool.setuptools_scm]
+write_to = "src/_version.py"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
 
 [tool.setuptools.package-data]
-"f4enix" = ["**/*.xlsx", "**/*.txt", "**/*.csv"]
+"em_interp" = ["**/*.xlsx", "**/*.txt", "**/*.csv"]
