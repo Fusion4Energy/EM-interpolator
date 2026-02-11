@@ -71,7 +71,7 @@ class TestMechTree:
 
 class TestInterpolator:
     @pytest.fixture
-    def interpolator_fixture(self):
+    def config_fixture(self) -> InterpolationConfig:
         config = InterpolationConfig(
             method=QUERY_TYPE.RADIUS,
             param=1,
@@ -80,6 +80,10 @@ class TestInterpolator:
             coincidence_tolerance=1e-6,
             multithread=True,
         )
+        return config
+
+    @pytest.fixture
+    def interpolator_fixture(self, config_fixture) -> Interpolator:
         file_idx = {"mech_node_id": 0, "mech_x": 1, "em_x": 1, "em_f": 4}
 
         with (
@@ -87,18 +91,17 @@ class TestInterpolator:
             as_file(RESOURCES.joinpath("em")) as dummy_em_path,
         ):
             interpolator = Interpolator(
-                dummy_em_path, mech_file, config, file_idx=file_idx
+                dummy_em_path, mech_file, config_fixture, file_idx=file_idx
             )
         return interpolator
 
-    def test_interpolate_all(self, interpolator_fixture):
+    def test_interpolate_all(self, interpolator_fixture: Interpolator):
         interpolator = interpolator_fixture
         interpolator.interpolate_all()
-    
-    def test_dump_interpolation(self, interpolator_fixture, tmp_path):
+
+    def test_dump_interpolation(self, interpolator_fixture: Interpolator, tmp_path):
         interpolator = interpolator_fixture
         interpolator.interpolate_all()
-        interpolator.dump_interpolation_check(Path(tmp_path, 'checks.csv'))
+        interpolator.dump_interpolation_check(Path(tmp_path, "checks.csv"))
         interpolator.export_to_ansys(tmp_path)
         interpolator.export_forces_to_vtk(tmp_path)
-

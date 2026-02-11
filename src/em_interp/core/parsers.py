@@ -1,5 +1,6 @@
 from pathlib import Path
 import logging
+import pandas as pd
 import numpy as np
 
 
@@ -94,19 +95,15 @@ def _detect_lines_to_skip(csvFile: Path) -> int:
 def _detect_delimiter(csvFile: Path, skip: int) -> np.ndarray:
     with open(csvFile, "r") as myCsvfile:
         header = myCsvfile.readline()
-        if header.find(";") != -1:
-            # df = pd.read_csv(csvFile,sep=";",engine="python",header=None,skiprows=skip)
-            df = np.genfromtxt(csvFile, delimiter=";", skip_header=skip)
-            return df
-        elif header.find(",") != -1:
-            # df = pd.read_csv(csvFile,sep=",",engine="python",header=None,skiprows=skip)
-            df = np.genfromtxt(csvFile, delimiter=",", skip_header=skip)
-            return df
-        elif header.find(":") != -1:
-            # df = pd.read_csv(csvFile,sep=":",engine="python",header=None,skiprows=skip)
-            df = np.genfromtxt(csvFile, delimiter=":", skip_header=skip)
-            return df
-        else:
-            # df = pd.read_csv(csvFile,delim_whitespace=True,engine="python",header=None,skiprows=skip)
-            df = np.genfromtxt(csvFile, delimiter=" ", skip_header=skip)
-            return df
+        delimiter = None
+        for d in [";", ",", ":"]:
+            if header.find(d) != -1:
+                delimiter = d
+                break
+        if delimiter is None:
+            delimiter = r"\s+"
+
+        logging.info(f"EM Delimiter detected: '{delimiter}'")
+
+        df = pd.read_csv(csvFile, sep=delimiter, skiprows=skip, header=None).values
+        return df
