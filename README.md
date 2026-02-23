@@ -5,6 +5,8 @@
 
 # EM forces interpolator
 
+![alt text](/imgs/screenshot_glyphs.png)
+
 ## Quickstart
 
 ``em-interpolator`` is now on PyPi. You can simply install it using:
