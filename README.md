@@ -27,8 +27,13 @@ After that, start the GUI using:
 python -m em_interp
 ```
 
-> **N.B.**  
+
+
+> **N.B. (1)**  
 > The first time you use the tool, it may take a long time to load. This is most likely due to C++ binding compilations from the GUI package. After this initial run, loading times should be much faster.
+
+> **N.B. (2)** 
+> To execute the tool in "batch mode" without using the GUI, have a look to this [python script](/scripts/batch_interpolate.py) example.
 
 ## GUI overview and functionalities
 
